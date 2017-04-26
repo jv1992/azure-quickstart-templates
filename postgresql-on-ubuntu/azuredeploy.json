@@ -337,7 +337,7 @@
           
           "sshKeyData": {
             "value": "[parameters('sshKeyData')]"
-          } ,ssh
+          },
           
           "subnet": {
             "value": "[variables('networkSettings').subnets.dmz]"
