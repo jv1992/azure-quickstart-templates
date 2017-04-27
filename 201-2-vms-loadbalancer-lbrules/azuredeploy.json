@@ -91,7 +91,7 @@
     },
      "artifactsPath": {
         "type": "string",
-       "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/mysql-replication",
+       "defaultValue": "https://raw.githubusercontent.com/jv1992/azure-quickstart-templates/master/201-2-vms-loadbalancer-lbrules",
        "metadata": {
          "description": "template and script file location",
           "artifactsBaseUrl": "Base URL of the Publisher Template gallery package"
@@ -113,7 +113,7 @@
     "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
     "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/BackendPool1')]",
     "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
-    "customScriptFilePath": "[concat(parameters('artifactsPath'), '/azuremysql.sh')]"
+    "customScriptFilePath": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/postgresql-on-ubuntu/install_postgresql.sh/"
   },
   "resources": [
     {
