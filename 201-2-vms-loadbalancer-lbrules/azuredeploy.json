@@ -42,14 +42,14 @@
     },
     "imageOffer": {
       "type": "string",
-      "defaultValue": "WindowsServer",
+      "defaultValue": "UbuntuServer",
       "metadata": {
         "description": "Image Offer"
       }
     },
     "imageSKU": {
       "type": "string",
-      "defaultValue": "2012-R2-Datacenter",
+      "defaultValue": "14.04.5-LTS",
       "metadata": {
         "description": "Image SKU"
       }
@@ -88,7 +88,15 @@
       "metadata": {
         "description": "Size of the VM"
       }
-    }
+    },
+     "artifactsPath": {
+        "type": "string",
+       "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/mysql-replication",
+       "metadata": {
+         "description": "template and script file location",
+          "artifactsBaseUrl": "Base URL of the Publisher Template gallery package"
+         }
+       },
   },
   "variables": {
     "storageAccountType": "Standard_LRS",
@@ -104,7 +112,8 @@
     "lbID": "[resourceId('Microsoft.Network/loadBalancers',parameters('lbName'))]",
     "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
     "lbPoolID": "[concat(variables('lbID'),'/backendAddressPools/BackendPool1')]",
-    "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]"
+    "lbProbeID": "[concat(variables('lbID'),'/probes/tcpProbe')]",
+    "customScriptFilePath": "[concat(parameters('artifactsPath'), '/azuremysql.sh')]"
   },
   "resources": [
     {
@@ -332,6 +341,36 @@
           }
         }
       }
+      
+      
+      {
++        "type": "Microsoft.Compute/virtualMachines/extensions",
++        "name": "[concat(parameters('dnsName'), copyIndex(), '/setupMySQL')]",
++        "apiVersion": "[variables('resourceAPIVersion')]",
++        "location": "[resourceGroup().location]",
++        "copy": {
++          "name": "extLoop",
++          "count": "[variables('nodeCount')]"
++        },
++        "dependsOn": [
++          "[concat('Microsoft.Compute/virtualMachines/', parameters('dnsName'), copyIndex())]"
++        ],
++        "properties": {
++          "publisher": "Microsoft.Azure.Extensions",
++          "type": "CustomScript",
++          "typeHandlerVersion": "2.0",
++          "autoUpgradeMinorVersion": true,
++          "settings": {
++            "fileUris": [
++              "[variables('customScriptFilePath')]"
++            ]
++          },
++          "protectedSettings": {
++            "commandToExecute": "[concat(parameters('customScriptCommandToExecute'), ' ', copyIndex(1), ' ', variables('ipOctet01'), add(variables('ipOctet2'), div(copyIndex(variables('ipOctet3')), 255)), '.', mod(copyIndex(variables('ipOctet3')), 255), ' ', variables('mysqlConfigFilePath'), ' ', variables('singleQuote'), parameters('mysqlReplicationPassword'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('mysqlRootPassword'), variables('singleQuote'), ' ', variables('singleQuote'), parameters('mysqlProbePassword'), variables('singleQuote'), ' ', parameters('dbSubnetStartAddress'))]"
++          }
++        }
+      
+      
     }
   ]
 }
