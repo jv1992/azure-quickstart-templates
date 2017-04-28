@@ -33,14 +33,47 @@
       "metadata": {
         "description": "OS Platform for the VM"
       }
+    },
+	  "existingVirtualNetworkName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET"
+      }
+    },
+    "existingVirtualNetworkResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing VNET resource group"
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the subnet in the virtual network you want to use"
+      }
+    },
+
+	  "vnetadress": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the subnet in the virtual network you want to use"
+      }
+    },
+	  "subneadress": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the subnet in the virtual network you want to use"
+      }
     }
+	  
   },
   "variables": {
-    "virtualNetworkName": "myVNET",
-    "addressPrefix": "10.0.0.0/16",
-    "subnet1Name": "Subnet-1",
-    "subnet1Prefix": "10.0.0.0/24",
-    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets',variables('virtualNetworkName'),variables('subnet1Name'))]",
+    "virtualNetworkName": "[parameters('existingVirtualNetworkName')]",
+    "addressPrefix": "[parameters('vnetadress')]"
+    "subnet1Name": "[parameters('subnetName')]",
+    "subnet1Prefix": "[parameters('subneadress')]",
+"vnetID": "[resourceId(parameters('existingVirtualNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks', parameters('existingVirtualNetworkName'))]",
+    "subnetRef": "[concat(variables('vnetID'),'/subnets/', variables('subnetName'))]",
     "availabilitySetName": "myAvSet",
     "Ubuntu": {
       "publisher": "Canonical",
